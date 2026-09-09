@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>am — activate</title>
+<style>
+:root {
+  --bg: #030303;
+  --card-bg: rgba(18, 18, 20, 0.65);
+  --card-border: rgba(255, 255, 255, 0.08);
+  --card-border-hover: rgba(255, 255, 255, 0.2);
+  --txt: #f4f4f5;
+  --dim: #a1a1aa;
+  --muted: #52525b;
+  --acc: #ffffff;
+  --acc-inverse: #000000;
+  --grid-line: rgba(255, 255, 255, 0.03);
+  --red: #f87171;
+  --green: #4ade80;
+  --green-bg: rgba(74, 222, 128, 0.08);
+  --red-bg: rgba(248, 113, 113, 0.08);
+  --radius: 16px;
+  --radius-sm: 8px;
+  --transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  background-color: var(--bg);
+  /* K-Frame Grid Background */
+  background-image: 
+    linear-gradient(var(--grid-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+  background-size: 32px 32px;
+  color: var(--txt);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-size: 13px;
+  line-height: 1.6;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40px 20px;
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* K-Frame Geometric Decorations */
+body::before, body::after {
+  content: "";
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(120px);
+  z-index: 0;
+  pointer-events: none;
+}
+body::before {
+  width: 320px;
+  height: 320px;
+  background: rgba(255, 255, 255, 0.03);
+  top: 10%;
+  left: 15%;
+}
+body::after {
+  width: 400px;
+  height: 400px;
+  background: rgba(255, 255, 255, 0.02);
+  bottom: 10%;
+  right: 15%;
+}
+
+.wrap {
+  width: 100%;
+  max-width: 480px;
+  position: relative;
+  z-index: 1;
+}
+
+/* Header K-Frame Style */
+header {
+  margin-bottom: 24px;
+  position: relative;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--card-border);
+}
+
+header h1 {
+  font-size: 26px;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  color: var(--txt);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+header h1 .brand-tag {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--dim);
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--card-border);
+  padding: 3px 8px;
+  border-radius: 20px;
+  margin-left: 4px;
+}
+
+header p {
+  color: var(--dim);
+  font-size: 13px;
+  margin-top: 6px;
+  font-weight: 400;
+}
+
+/* Step Indicator */
+.steps {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 24px;
+}
+
+.steps div {
+  flex: 1;
+  padding: 10px 0;
+  text-align: center;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  border-radius: var(--radius-sm);
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--card-border);
+  color: var(--muted);
+  transition: var(--transition);
+}
+
+.steps div.on {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.3);
+  color: var(--txt);
+}
+
+.steps div.done {
+  background: rgba(255, 255, 255, 0.03);
+  border-color: var(--card-border);
+  color: var(--dim);
+}
+
+/* K-Frame Floating Card Glassmorphism */
+.panel {
+  background: var(--card-bg);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius);
+  padding: 24px;
+  margin-bottom: 16px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+  transition: var(--transition);
+}
+
+.panel:hover {
+  border-color: var(--card-border-hover);
+}
+
+.panel-stats {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.stat-box .label {
+  color: var(--dim);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 2px;
+}
+
+.stat-box .val {
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--txt);
+  font-family: ui-monospace, 'Cascadia Code', Menlo, monospace;
+}
+
+.panel h2 {
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  margin-bottom: 4px;
+}
+
+.panel .hint {
+  color: var(--dim);
+  font-size: 12px;
+  margin-bottom: 18px;
+}
+
+label {
+  display: block;
+  color: var(--dim);
+  font-size: 11px;
+  font-weight: 500;
+  margin-bottom: 8px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+input {
+  width: 100%;
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-sm);
+  color: var(--txt);
+  font-family: inherit;
+  font-size: 13px;
+  padding: 12px 14px;
+  outline: none;
+  transition: var(--transition);
+}
+
+input:focus {
+  border-color: var(--acc);
+  box-shadow: 0 0 0 1px var(--acc);
+}
+
+/* K-Frame Buttons */
+.btn-group {
+  display: flex;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+button {
+  background: var(--acc);
+  color: var(--acc-inverse);
+  border: 1px solid var(--acc);
+  border-radius: var(--radius-sm);
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 12px 20px;
+  cursor: pointer;
+  width: 100%;
+  transition: var(--transition);
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+}
+
+button:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+button:active {
+  transform: translateY(0);
+}
+
+button.sec {
+  background: transparent;
+  color: var(--txt);
+  border: 1px solid var(--card-border);
+}
+
+button.sec:hover {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: var(--card-border-hover);
+}
+
+button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Messages */
+.msg {
+  padding: 10px 14px;
+  font-size: 12px;
+  border-radius: var(--radius-sm);
+  margin-top: 14px;
+  display: none;
+}
+
+.msg.err {
+  display: block;
+  background: var(--red-bg);
+  border: 1px solid rgba(248, 113, 113, 0.2);
+  color: var(--red);
+}
+
+.msg.ok {
+  display: block;
+  background: var(--green-bg);
+  border: 1px solid rgba(74, 222, 128, 0.2);
+  color: var(--green);
+}
+
+/* Key-Value Display */
+.kv {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--card-border);
+  font-size: 12px;
+}
+
+.kv:last-of-type { border-bottom: none; }
+.kv b { color: var(--dim); font-weight: 500; }
+.kv span { 
+  color: var(--txt); 
+  text-align: right; 
+  word-break: break-all; 
+  max-width: 65%;
+  font-family: ui-monospace, 'Cascadia Code', Menlo, monospace;
+}
+
+.tok {
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-sm);
+  padding: 12px;
+  font-size: 11px;
+  word-break: break-all;
+  color: var(--dim);
+  max-height: 80px;
+  overflow-y: auto;
+  font-family: ui-monospace, 'Cascadia Code', Menlo, monospace;
+  margin-bottom: 12px;
+}
+
+button.tiny {
+  padding: 8px 14px;
+  font-size: 11px;
+}
+
+footer {
+  margin-top: 32px;
+  color: var(--muted);
+  font-size: 11px;
+  text-align: center;
+  letter-spacing: 0.02em;
+}
+
+.hide { display: none !important; }
+</style>
+</head>  
+<body>  
+
+<div class="wrap">  
+  <header>  
+    <h1>am / activate <span class="brand-tag">BY KYZX</span></h1>  
+    <p>Alight Motion Premium — Magic Link Activation Interface</p>  
+  </header>  
+
+  <div class="steps">  
+    <div id="n1" class="on">01 Email</div>  
+    <div id="n2">02 Link</div>  
+    <div id="n3">03 Status</div>  
+  </div>  
+
+  <!-- Stats Panel -->
+  <div class="panel panel-stats">  
+    <div class="stat-box">  
+      <div class="label">Total Aktivasi</div>  
+      <div class="val" id="st-total">-</div>  
+    </div>  
+    <div class="stat-box" style="text-align:right">  
+      <div class="label">Hari Ini</div>  
+      <div class="val" id="st-today">-</div>  
+    </div>  
+  </div>  
+
+  <!-- Step 1: Input Email -->
+  <div class="panel" id="p1">  
+    <h2>Masukkan Email</h2>  
+    <p class="hint">Link login akan dikirimkan ke email tanpa membutuhkan password.</p>  
+    <label for="em">Alamat Email</label>  
+    <input id="em" type="email" placeholder="nama@email.com" autocomplete="off">  
+    <div class="btn-group">
+      <button id="b1">Kirim Link &rarr;</button>  
+    </div>
+    <div id="m1" class="msg"></div>  
+  </div>  
+
+  <!-- Step 2: Input Verification Link -->
+  <div class="panel hide" id="p2">  
+    <h2>Tempel Link Verifikasi</h2>  
+    <p class="hint">Link terkirim ke <span id="w-em" style="color:var(--txt); font-weight: 500;">-</span>. Salin link dari email, lalu paste di bawah.</p>  
+    <label for="lk">Link Verifikasi / Token</label>  
+    <input id="lk" type="text" placeholder="https://... atau oobCode" autocomplete="off">  
+    <div class="btn-group">
+      <button id="b2" class="sec">&larr; Kembali</button>  
+      <button id="b3">Verifikasi &rarr;</button>  
+    </div>
+    <div id="m2" class="msg"></div>  
+  </div>  
+
+  <!-- Step 3: Success Status -->
+  <div class="panel hide" id="p3">  
+    <h2 style="color:var(--txt)">Premium Aktif</h2>  
+    <p class="hint">Aktivasi berhasil. Rincian akun dan token dapat disalin di bawah ini.</p>  
+    <div class="kv"><b>Email</b><span id="r-em">-</span></div>  
+    <div class="kv"><b>UID</b><span id="r-uid">-</span></div>  
+    <div class="kv"><b>Order ID</b><span id="r-ord">-</span></div>  
+    
+    <div style="margin-top:16px">  
+      <label>ID Token</label>  
+      <div class="tok" id="r-tok">-</div>  
+      <div class="btn-group">
+        <button class="tiny sec" id="b4">Copy Token</button>  
+        <button class="tiny sec" id="b5">Aktivasi Lain</button>  
+      </div>
+    </div>  
+  </div>  
+
+  <footer>Unofficial &middot; Reverse Engineered &middot; Use at your own risk</footer>  
+</div>  
+
+<script>  
+const $ = i => document.getElementById(i)  
+  
+fetch('/api/stats').then(r => r.json()).then(j => {  
+  $('st-total').textContent = Number(j.total || 0).toLocaleString('id-ID')  
+  $('st-today').textContent = Number(j.today || 0).toLocaleString('id-ID')  
+}).catch(() => {})  
+  
+const step = n => {  
+  for (let i = 1; i <= 3; i++) {  
+    $('p' + i).classList.toggle('hide', i !== n)  
+    $('n' + i).className = i < n ? 'done' : (i === n ? 'on' : '')  
+  }  
+}  
+
+const say = (id, txt, ok) => {  
+  const m = $(id)  
+  m.textContent = txt  
+  m.className = 'msg ' + (ok ? 'ok' : 'err')  
+}  
+
+const busy = (b, on, t) => { b.disabled = on; if (t) b.textContent = t }  
+  
+$('b1').onclick = async () => {  
+  const em = $('em').value.trim()  
+  if (!em.includes('@')) return say('m1', 'Email tidak valid', 0)  
+  const b = $('b1'); busy(b, true, 'Mengirim...')  
+  try {  
+    const r = await fetch('/api/send-link', { method: 'POST', headers: {'content-type':'application/json'}, body: JSON.stringify({ email: em }) })  
+    const j = await r.json()  
+    if (j.success) { say('m1', 'Link terkirim, silakan cek email', 1); $('w-em').textContent = em; setTimeout(() => step(2), 700) }  
+    else say('m1', j.message || 'Gagal mengirim link', 0)  
+  } catch { say('m1', 'Gagal terhubung ke server', 0) }  
+  busy(b, false); b.textContent = 'Kirim Link \u2192'  
+}  
+  
+$('b2').onclick = () => step(1)  
+  
+$('b3').onclick = async () => {  
+  const raw = $('lk').value.trim()  
+  if (!raw) return say('m2', 'Link verifikasi masih kosong', 0)  
+  const b = $('b3'); busy(b, true, 'Verifikasi...')  
+  try {  
+    const r = await fetch('/api/verify-link', { method: 'POST', headers: {'content-type':'application/json'}, body: JSON.stringify({ email: $('w-em').textContent, magicLink: raw }) })  
+    const j = await r.json()  
+    if (j.success) {  
+      const d = j.data  
+      $('r-em').textContent = d.email  
+      $('r-uid').textContent = d.uid  
+      $('r-ord').textContent = d.orderId || '-'  
+      $('r-tok').textContent = d.idToken  
+      window.__tok = d.idToken  
+      step(3)  
+    } else say('m2', j.message || 'Gagal melakukan verifikasi', 0)  
+  } catch { say('m2', 'Gagal terhubung ke server', 0) }  
+  busy(b, false); b.textContent = 'Verifikasi \u2192'  
+}  
+  
+$('b4').onclick = () => { 
+  navigator.clipboard.writeText(window.__tok || ''); 
+  $('b4').textContent = 'Copied!'
+  setTimeout(() => { $('b4').textContent = 'Copy Token' }, 2000)
+}  
+
+$('b5').onclick = () => { $('lk').value = ''; step(1) }  
+</script>  
+</body>  
+</html>
